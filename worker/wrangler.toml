@@ -1,0 +1,13 @@
+name = "beanie-editor-api"
+main = "src/index.ts"
+compatibility_date = "2026-03-29"
+
+kv_namespaces = [
+  { binding = "EDITOR_KV", id = "c91a24dff64045fd91807bb85db38106", preview_id = "609fb0a18cc548a188dccafa69be8849" }
+]
+
+[vars]
+SESSION_TTL_SECONDS = "604800"
+RECENT_NODE_LIMIT = "12"
+ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"
+

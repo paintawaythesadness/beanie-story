@@ -1,0 +1,16 @@
+{
+  "name": "beanie-editor",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "frontend",
+    "worker"
+  ],
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:worker": "npm --prefix worker run dev",
+    "build": "npm --prefix frontend run build && npm --prefix worker run check",
+    "typecheck": "npm --prefix frontend run typecheck && npm --prefix worker run check"
+  }
+}
+

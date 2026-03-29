@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.wrangler/
+.DS_Store
+coverage/
+*.tsbuildinfo
+frontend/.env.local
+frontend/.env.production.local
+worker/.dev.vars

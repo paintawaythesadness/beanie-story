@@ -1,0 +1,263 @@
+:root {
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: #1e293b;
+  background:
+    radial-gradient(circle at top left, rgba(255, 231, 214, 0.95), transparent 35%),
+    linear-gradient(180deg, #fffaf4 0%, #f3f5f8 100%);
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.auth-shell,
+.app-shell {
+  width: min(100%, 780px);
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.auth-card,
+.panel {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 24px;
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.auth-card {
+  max-width: 460px;
+  padding: 1.5rem;
+}
+
+.panel {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.section-header h2,
+.section-header h3,
+.auth-copy h1,
+.app-header h1 {
+  margin: 0;
+}
+
+.section-header p,
+.auth-copy p,
+.helper {
+  margin: 0.25rem 0 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b45309;
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.field span {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 0.95rem 1rem;
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid rgba(234, 88, 12, 0.22);
+  border-color: #ea580c;
+}
+
+textarea {
+  min-height: 320px;
+  resize: vertical;
+}
+
+.large-input {
+  min-height: 56px;
+  text-transform: uppercase;
+}
+
+.primary-button,
+.ghost-button,
+.recent-chip {
+  min-height: 52px;
+  border-radius: 16px;
+  border: none;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    opacity 140ms ease;
+}
+
+.primary-button {
+  padding: 0.95rem 1.2rem;
+  background: linear-gradient(135deg, #ea580c, #f59e0b);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 12px 24px rgba(234, 88, 12, 0.24);
+}
+
+.ghost-button {
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.recent-chip {
+  padding: 0.8rem 1rem;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.primary-button:hover,
+.ghost-button:hover,
+.recent-chip:hover {
+  transform: translateY(-1px);
+}
+
+.primary-button:disabled,
+.ghost-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.open-row,
+.status-row {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.recent-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.compact {
+  margin-bottom: 0.15rem;
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.message {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.message.success {
+  background: #ecfdf5;
+  color: #166534;
+}
+
+.message.error {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.helper {
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+@media (min-width: 640px) {
+  .auth-card,
+  .panel {
+    padding: 1.5rem;
+  }
+
+  .open-row {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+
+  .status-row {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+}
