@@ -36,16 +36,18 @@ export function clearSession() {
   localStorage.removeItem(SESSION_KEY);
 }
 
-export function saveDraft(node: Pick<StoryNode, "id" | "title" | "status" | "content">) {
+export function saveDraft(node: Pick<StoryNode, "id" | "name" | "displayTitle" | "content" | "meta" | "modifiedAt">) {
   localStorage.setItem(draftKey(node.id), JSON.stringify(node));
 }
 
-export function loadDraft(id: string): Pick<StoryNode, "id" | "title" | "status" | "content"> | null {
+export function loadDraft(
+  id: string,
+): Pick<StoryNode, "id" | "name" | "displayTitle" | "content" | "meta" | "modifiedAt"> | null {
   const raw = localStorage.getItem(draftKey(id));
   if (!raw) return null;
 
   try {
-    return JSON.parse(raw) as Pick<StoryNode, "id" | "title" | "status" | "content">;
+    return JSON.parse(raw) as Pick<StoryNode, "id" | "name" | "displayTitle" | "content" | "meta" | "modifiedAt">;
   } catch {
     return null;
   }
@@ -54,4 +56,3 @@ export function loadDraft(id: string): Pick<StoryNode, "id" | "title" | "status"
 export function clearDraft(id: string) {
   localStorage.removeItem(draftKey(id));
 }
-

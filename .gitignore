@@ -7,3 +7,10 @@ coverage/
 frontend/.env.local
 frontend/.env.production.local
 worker/.dev.vars
+worker/wrangler-dev.log
+worker/wrangler-dev.err.log
+tweeconversion/.env
+tweeconversion/.env.local
+tweeconversion/*.twee
+tweeconversion/output/
+tweeconversion/archive/

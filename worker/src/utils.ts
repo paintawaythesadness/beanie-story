@@ -1,6 +1,5 @@
-import { NODE_STATUSES, type NodeStatus, type StoryNode } from "./types";
+import type { StoryNode } from "./types";
 
-const NODE_ID_PATTERN = /^[A-Z0-9_-]{1,32}$/;
 const RECENT_KEY = "meta:recent";
 
 export const jsonHeaders = {
@@ -8,26 +7,23 @@ export const jsonHeaders = {
 };
 
 export function normalizeNodeId(value: string): string {
-  return value.trim().toUpperCase();
+  return value.trim();
 }
 
 export function validateNodeId(value: string): string {
   const normalized = normalizeNodeId(value);
-  if (!NODE_ID_PATTERN.test(normalized)) {
-    throw new HttpError(400, "Invalid node ID. Use letters, numbers, dashes, or underscores.");
+  if (!normalized) {
+    throw new HttpError(400, "Invalid node ID. It cannot be empty.");
   }
   return normalized;
 }
 
-export function normalizeStatus(value: unknown): NodeStatus {
-  if (typeof value !== "string" || !NODE_STATUSES.includes(value as NodeStatus)) {
-    throw new HttpError(400, "Invalid status value.");
-  }
-  return value as NodeStatus;
+export function nodeKey(id: string) {
+  return `node:${encodeURIComponent(validateNodeId(id))}`;
 }
 
-export function nodeKey(id: string) {
-  return `node:${validateNodeId(id)}`;
+export function legacyNodeKey(id: string) {
+  return `node:${normalizeLegacyId(id)}`;
 }
 
 export function getRecentKey() {
@@ -79,15 +75,20 @@ export function createCorsHeaders(request: Request, allowedOrigins: string) {
     .map((item) => item.trim())
     .filter(Boolean);
 
-  const origin = requestOrigin && allowList.includes(requestOrigin) ? requestOrigin : allowList[0] || "*";
-
-  return {
-    "Access-Control-Allow-Origin": origin,
-    "Access-Control-Allow-Methods": "GET,POST,PUT,OPTIONS",
-    "Access-Control-Allow-Headers": "Authorization,Content-Type",
+  const origin = requestOrigin && allowList.includes(requestOrigin) ? requestOrigin : null;
+  const headers: Record<string, string> = {
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Credentials": "true",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
   };
+
+  if (origin) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+
+  return headers;
 }
 
 export async function sha256Base64Url(input: string, secret: string): Promise<string> {
@@ -138,19 +139,97 @@ export function getExpiryIso(token: string) {
   return new Date(payload.exp * 1000).toISOString();
 }
 
-export function sanitizeNode(input: { id: string; title?: unknown; status: unknown; content?: unknown }): StoryNode {
+export function sanitizeNode(input: {
+  id: string;
+  name?: unknown;
+  displayTitle?: unknown;
+  content?: unknown;
+  meta?: unknown;
+  modifiedAt?: unknown;
+}): StoryNode {
   const id = validateNodeId(input.id);
-  const title = typeof input.title === "string" ? input.title.trim() : "";
+  const name = typeof input.name === "string" ? input.name.trim() : "";
+  if (!name) {
+    throw new HttpError(400, "Missing required field: name.");
+  }
+
+  if (input.displayTitle !== undefined && typeof input.displayTitle !== "string") {
+    throw new HttpError(400, "displayTitle must be a string when provided.");
+  }
+
   const content = typeof input.content === "string" ? input.content : "";
-  const status = normalizeStatus(input.status);
+  const meta = input.meta === undefined ? {} : sanitizeMeta(input.meta);
+  const modifiedAt =
+    input.modifiedAt === undefined
+      ? new Date().toISOString()
+      : sanitizeModifiedAt(input.modifiedAt);
 
   return {
     id,
-    title,
-    status,
+    name,
+    displayTitle: input.displayTitle,
     content,
-    updatedAt: new Date().toISOString(),
+    meta,
+    modifiedAt,
   };
+}
+
+export function normalizeStoredNode(node: unknown, requestedId?: string): StoryNode | null {
+  if (!isPlainObject(node)) {
+    return null;
+  }
+
+  if (typeof node.id === "string" && typeof node.name === "string" && typeof node.content === "string") {
+    return {
+      id: validateNodeId(node.id),
+      name: node.name,
+      displayTitle: typeof node.displayTitle === "string" ? node.displayTitle : undefined,
+      content: node.content,
+      meta: sanitizeMeta(node.meta),
+      modifiedAt: typeof node.modifiedAt === "string" ? node.modifiedAt : undefined,
+    };
+  }
+
+  if (
+    typeof node.id === "string" &&
+    typeof node.title === "string" &&
+    typeof node.content === "string"
+  ) {
+    const id = requestedId ? validateNodeId(requestedId) : validateNodeId(node.id);
+    return {
+      id,
+      name: node.title || id,
+      content: node.content,
+      meta: typeof node.status === "string" ? { editStatus: node.status } : {},
+      modifiedAt: typeof node.updatedAt === "string" ? node.updatedAt : undefined,
+    };
+  }
+
+  return null;
+}
+
+function sanitizeMeta(value: unknown): Record<string, unknown> {
+  if (!isPlainObject(value)) {
+    throw new HttpError(400, "meta must be an object.");
+  }
+
+  return value;
+}
+
+function sanitizeModifiedAt(value: unknown): string {
+  if (typeof value !== "string" || !value.trim()) {
+    throw new HttpError(400, "modifiedAt must be a non-empty string when provided.");
+  }
+
+  return value;
+}
+
+function normalizeLegacyId(value: string): string {
+  return value.trim().toUpperCase();
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function toBase64Url(input: string) {

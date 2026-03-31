@@ -205,6 +205,51 @@ textarea {
   gap: 0.6rem;
 }
 
+.search-results {
+  display: grid;
+  gap: 0.6rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.search-chip {
+  min-height: 48px;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  border: 1px solid #d6d3d1;
+  background: #fff;
+  color: #1f2937;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.search-chip:hover {
+  transform: translateY(-1px);
+}
+
+.linked-panel,
+.linked-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.linked-chip {
+  min-height: 44px;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.82);
+  color: #0f172a;
+  text-align: left;
+}
+
+.linked-chip:hover {
+  transform: translateY(-1px);
+}
+
 .compact {
   margin-bottom: 0.15rem;
 }

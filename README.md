@@ -1,6 +1,6 @@
 # Beanie Editor
 
-Beanie Editor is a small private web app for editing Twine or Twee story nodes one at a time from a phone or tablet.
+Beanie Editor is a small private web app for editing Twine or Twee story passages one at a time from a phone or tablet.
 
 It is intentionally simple:
 
@@ -25,26 +25,32 @@ beanie-editor/
 ## What it does
 
 - Password-gated login screen
-- Open a node by ID like `S3B2`
-- Edit title, status, and content
-- Save one node at a time into Cloudflare KV
-- Show a small recent-nodes list
+- Open a passage by exact ID
+- Edit `name`, optional `displayTitle`, `content`, and `meta`
+- Save one passage record at a time into Cloudflare KV
+- Show a small recent-passages list
 - Store a short-lived signed session token in `localStorage`
-- Store unsaved local drafts per node in `localStorage`
+- Store unsaved local drafts per passage in `localStorage`
 
 ## Data model
 
-Each node is stored in KV as JSON under a normalized key like `node:S3B2`.
+Each passage is stored in KV as JSON under a URL-encoded key like `node:Ask%20the%20teens%20what%20happened`.
 
 ```json
 {
-  "id": "S3B2",
-  "title": "Judgy Pickle",
-  "status": "needs_edit",
-  "content": "Node text here...",
-  "updatedAt": "2026-03-29T20:00:00.000Z"
+  "id": "Ask the teens what happened",
+  "name": "Ask the teens what happened",
+  "content": "Passage body here...",
+  "meta": {
+    "editStatus": "default",
+    "position": "123,456",
+    "size": "100,100"
+  },
+  "modifiedAt": "2026-03-30T12:00:00Z"
 }
 ```
+
+`displayTitle` is optional and preserved when present, but it is not required.
 
 Recent nodes are stored in a separate KV key:
 
@@ -52,10 +58,10 @@ Recent nodes are stored in a separate KV key:
 meta:recent
 ```
 
-That value is just a JSON array of node IDs, for example:
+That value is just a JSON array of passage IDs, for example:
 
 ```json
-["S3B2", "S1A1", "END1"]
+["Ask the teens what happened", "Scene 1: The Case Begins", "OpenAnotherJar"]
 ```
 
 ## Auth design
@@ -236,18 +242,9 @@ This keeps the architecture simple and cheap on low traffic.
 - `PUT /api/node/:id`
 - `GET /api/recent`
 
-## Node ID rules
+## Passage ID rules
 
-Node IDs are normalized to uppercase and trimmed.
-
-Allowed characters:
-
-- letters
-- numbers
-- `_`
-- `-`
-
-Maximum length: 32 characters
+Passage IDs are trimmed but otherwise preserved exactly. Spaces and punctuation are allowed.
 
 ## Notes for future improvements
 

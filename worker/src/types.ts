@@ -1,18 +1,10 @@
-export const NODE_STATUSES = [
-  "default",
-  "needs_edit",
-  "ai_drafted",
-  "final",
-] as const;
-
-export type NodeStatus = (typeof NODE_STATUSES)[number];
-
 export interface StoryNode {
   id: string;
-  title: string;
-  status: NodeStatus;
+  name: string;
+  displayTitle?: string;
   content: string;
-  updatedAt: string;
+  meta: Record<string, unknown>;
+  modifiedAt?: string;
 }
 
 export interface Env {
