@@ -1,7 +1,18 @@
 import type { SessionResponse, StoryNode } from "../types";
 
-const DEFAULT_API_BASE = "http://127.0.0.1:8787";
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE).replace(/\/$/, "");
+const DEFAULT_API_BASE = "https://beanie-editor-api.paintawaythesadness.workers.dev";
+
+function safeString(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
+
+const rawApiBase = import.meta.env.VITE_API_BASE_URL ?? DEFAULT_API_BASE;
+
+if (!import.meta.env.VITE_API_BASE_URL) {
+  console.warn("VITE_API_BASE_URL is not set, using default API base");
+}
+
+const API_BASE = safeString(rawApiBase).replace(/\/$/, "");
 
 type RawStoryNode = Partial<
   StoryNode & {
